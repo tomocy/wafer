@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+const (
+	maxWidth = 40
+)
+
 func New(dest io.Writer) *Wafer {
 	return &Wafer{
 		dest: dest,
@@ -18,8 +22,9 @@ type Wafer struct {
 }
 
 func (w *Wafer) Append(s string) {
-	ls := splitToLines(s)
-	width := maxWidth(ls)
+	wrapped := wrap(maxWidth, s)
+	ls := splitToLines(wrapped)
+	width := calculateMaxWidth(ls)
 	w.writeVertical(width)
 	for _, l := range ls {
 		w.write(width, l)
@@ -27,11 +32,30 @@ func (w *Wafer) Append(s string) {
 	w.writeVertical(width)
 }
 
+func wrap(width int, s string) string {
+	var b strings.Builder
+	var lineLen int
+	for i, r := range s {
+		lineLen++
+		b.WriteRune(r)
+		if r == '\n' {
+			lineLen = 0
+			continue
+		}
+		if i != len(s)-1 && width <= lineLen {
+			lineLen = 0
+			b.WriteRune('\n')
+		}
+	}
+
+	return b.String()
+}
+
 func splitToLines(s string) []string {
 	return strings.Split(s, "\n")
 }
 
-func maxWidth(ss []string) int {
+func calculateMaxWidth(ss []string) int {
 	var max int
 	for _, s := range ss {
 		if current := len(s); max < current {
