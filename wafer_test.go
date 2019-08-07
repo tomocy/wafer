@@ -68,6 +68,13 @@ func TestWrap(t *testing.T) {
 			},
 			expected: "aiu\neo\naiu\neo\naiu\neo",
 		},
+		"multi bytes": {
+			input: input{
+				width: 3,
+				s:     "アイウエオ大阪",
+			},
+			expected: "アイウ\nエオ大\n阪",
+		},
 	}
 
 	for name, test := range tests {
