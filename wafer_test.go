@@ -79,3 +79,40 @@ func TestWrap(t *testing.T) {
 		})
 	}
 }
+
+func TestCalculateMaxWidth(t *testing.T) {
+	tests := map[string]struct {
+		input    []string
+		expected int
+	}{
+		"single byte": {
+			input:    []string{"aiueo"},
+			expected: 5,
+		},
+		"multi byte": {
+			input:    []string{"アイウエオ"},
+			expected: 5,
+		},
+		"single byte in multi elements": {
+			input:    []string{"aiueo", "aiueoaiueo"},
+			expected: 10,
+		},
+		"multi byte in multi elements": {
+			input:    []string{"アイウエオ", "あいうえおアイウエオ"},
+			expected: 10,
+		},
+		"single and multi byte in multi elements": {
+			input:    []string{"aiueo", "アイウエオ"},
+			expected: 5,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			actual := calculateMaxWidth(test.input)
+			if actual != test.expected {
+				t.Errorf("unexpected max width returned by calculatedMaxWidth: got %d, expect %d\n", actual, test.expected)
+			}
+		})
+	}
+}

@@ -58,7 +58,7 @@ func splitToLines(s string) []string {
 func calculateMaxWidth(ss []string) int {
 	var max int
 	for _, s := range ss {
-		if current := len(s); max < current {
+		if current := len([]rune(s)); max < current {
 			max = current
 		}
 	}
@@ -71,7 +71,7 @@ func (w *Wafer) writeVertical(width int) {
 }
 
 func (w *Wafer) write(width int, s string) {
-	s = fmt.Sprintf("%s%s", s, strings.Repeat(" ", width-len(s)))
+	s = fmt.Sprintf("%s%s", s, strings.Repeat(" ", width-len([]rune(s))))
 	w.builder.WriteString(fmt.Sprintf("| %s |\n", s))
 }
 
